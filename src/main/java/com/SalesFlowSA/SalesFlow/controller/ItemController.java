@@ -4,10 +4,7 @@ import com.SalesFlowSA.SalesFlow.model.DTO.ItemDTO;
 import com.SalesFlowSA.SalesFlow.service.ItemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -25,5 +22,10 @@ public class ItemController {
     @PostMapping("/registerItem")
     public ResponseEntity<Map<String, Object>> registerItem(@RequestBody ItemDTO itemDTO){
         return itemService.registerItem(itemDTO);
+    }
+
+    @DeleteMapping("/deleteItem/{id}")
+    public ResponseEntity<?> deleteItem(@PathVariable("id") Long id){
+        return itemService.deleteItem(id);
     }
 }

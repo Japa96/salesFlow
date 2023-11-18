@@ -25,7 +25,12 @@ public class SellController {
     }
 
     @GetMapping("/searchAllSells")
-    public ResponseEntity<?> searchAllSelles(){
+    public ResponseEntity<?> searchAllSells(){
         return sellService.searchAllSell();
+    }
+
+    @GetMapping("/allSellsByCpf/{cpf}")
+    public ResponseEntity<?> allSellsByCpf(@PathVariable("cpf") String cpf){
+        return sellService.allSellsByCpf(cpf);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +37,21 @@ public class PaymentMethodService {
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Fail to register Payment Method");
             response.put("error", e);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    public ResponseEntity<?> deletePaymentMethod(@PathVariable("id") Long id){
+        try{
+            paymentMethodRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Payment Method not found"));
+            paymentMethodRepository.deleteById(id);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Payment Method id " + id + " deleted successfully");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e){
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Fail to delete Payment Method id " + id);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }

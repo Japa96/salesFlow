@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +38,21 @@ public class SalesPersonService {
 
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Fail to register Sales person");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    public ResponseEntity<?> deleteSalesPerson(@PathVariable("id") Long id){
+        try{
+            salesPersonRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("Sales person not found"));
+            salesPersonRepository.deleteById(id);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Sales person id " + id + " deleted successfully");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        }catch (Exception e){
+            Map<String, Object> response = new HashMap<>();
+            response.put("message", "Fail to delete Sales person id " + id);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }

@@ -4,10 +4,7 @@ import com.SalesFlowSA.SalesFlow.model.DTO.PaymentMethodDTO;
 import com.SalesFlowSA.SalesFlow.service.PaymentMethodService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -25,6 +22,11 @@ public class PaymentMethodController {
     @PostMapping("/registerPaymentMethod")
     public ResponseEntity<Map<String, Object>> registerPaymentMethod(@RequestBody PaymentMethodDTO paymentMethodDTO){
         return paymentMethodService.registerPaymentMethod(paymentMethodDTO);
+    }
+
+    @DeleteMapping("/deletePaymentMethod/{id}")
+    public ResponseEntity<?> deletePaymentMethod(@PathVariable("id") Long id){
+        return paymentMethodService.deletePaymentMethod(id);
     }
 
 }
