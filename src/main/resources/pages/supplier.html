@@ -12,6 +12,29 @@
 <div id="navbar">
     <button id="home-page">Home</button>
 </div>
+<div id="supplier-buttons">
+    <button id="register-supplier">Register Supplier</button>
+    <button id="search-all-supplier">Search all Supplier</button>
+</div>
+<div class="container-form" id="container-form-supplier" style="display: none;">
+    <form id="supplier-form">
+        <label>Name:</label>
+        <input type="text" id="supplier-name" name="supplier-name">
+        <br>
+        <label>Country of Origin:</label>
+        <input type="text" id="country-of-origin-supplier" name="country-of-origin-supplier">
+        <br>
+        <button type="submit">Register</button>
+    </form>
+</div>
+<table id="table-list-supplier" style="display: none;">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Country of Origin</th>
+    </tr>
+    <!-- Aqui você adicionará as linhas com os dados dinamicamente usando JavaScript -->
+</table>
 
 <script src="../js/main.js"></script>
 </body>

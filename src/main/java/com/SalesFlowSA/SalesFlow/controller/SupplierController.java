@@ -28,4 +28,9 @@ public class SupplierController {
     public ResponseEntity<?> updateSupplier(@PathVariable("id") Long id, @RequestBody SupplierDTO supplierUpdateDTO){
         return supplierService.updateSupplier(id, supplierUpdateDTO);
     }
+
+    @GetMapping("/searchAllSupplier")
+    public ResponseEntity<?> searchAllSupplier(){
+        return supplierService.searchAllSupplier();
+    }
 }

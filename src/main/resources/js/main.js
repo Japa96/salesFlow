@@ -1,56 +1,35 @@
-function loadData(endpoint) {
+function loadData(endpoint, tableId) {
     fetch(endpoint)
         .then(response => response.json())
         .then(data => {
             console.log(data);
-            inputTable(data);
+            inputTable(data, tableId);
 
         })
         .catch(error => {
             console.error('Error:', error);
         });
 }
-function clearTable() {
-    var table = document.getElementById("table-list-customer");
+function clearTable(tableId) {
+    var table = document.getElementById(tableId);
     var rowCount = table.rows.length;
 
     for (var i = rowCount - 1; i > 0; i--) {
         table.deleteRow(i);
     }
 }
-function inputTable(data) {
-    clearTable();
-    data.forEach(function(customer) {
-        var table = document.getElementById('table-list-customer');
+function inputTable(data, tableId) {
+    clearTable(tableId);
+    data.forEach(function(item) {
+        var table = document.getElementById(tableId);
         var row = table.insertRow();
 
-        // Adiciona células à linha
-        var idCell = row.insertCell(0);
-        var nameCell = row.insertCell(1);
-        var lastNameCell = row.insertCell(2);
-        var cpfCell = row.insertCell(3);
-        var emailCell = row.insertCell(4);
-        var cityCell = row.insertCell(5);
-        var stateCell = row.insertCell(6);
-        var countryCell = row.insertCell(7);
-        var streetCell = row.insertCell(8);
-        var neighborhoodCell = row.insertCell(9);
-        var zipCodeCell = row.insertCell(10);
-        var numberCell = row.insertCell(11);
-
-        // Preenche as células com dados do cliente
-        idCell.innerHTML = customer.id;
-        nameCell.innerHTML = customer.name;
-        lastNameCell.innerHTML = customer.lastName;
-        cpfCell.innerHTML = customer.cpf;
-        emailCell.innerHTML = customer.email;
-        cityCell.innerHTML = customer.address.city;
-        stateCell.innerHTML = customer.address.state;
-        countryCell.innerHTML = customer.address.country;
-        streetCell.innerHTML = customer.address.street;
-        neighborhoodCell.innerHTML = customer.address.neighborhood;
-        zipCodeCell.innerHTML = customer.address.zipCode;
-        numberCell.innerHTML = customer.address.number;
+        for (var key in item) {
+            if (item.hasOwnProperty(key)) {
+                var cell = row.insertCell();
+                cell.innerHTML = item[key];
+            }
+        }
     });
 }
 
@@ -64,7 +43,9 @@ document.addEventListener("DOMContentLoaded", function () {
     var homeButton = document.getElementById("home-page");
     var registerCustomerButton = document.getElementById("register-customer");
     var searchAllCustomer = document.getElementById("search-all-customer");
-    var searchCustomerById = document.getElementById("search-customer-by-id");
+    var searchCustomerById = document.getElementById("search-customer-by-cpf");
+    var registerSupplier = document.getElementById("register-supplier");
+    var searchAllSupplier = document.getElementById("search-all-supplier");
 
     if (customersButton) {
         customersButton.addEventListener("click", function () {
@@ -157,17 +138,17 @@ document.addEventListener("DOMContentLoaded", function () {
                     })
                     .catch(error => {
                         console.error('Error:', error);
-                    });
                 });
-            }
+            });
+    }
 
     if(searchAllCustomer) {
        searchAllCustomer.addEventListener("click", function () {
-            clearTable();
+            clearTable('table-list-customer');
             document.getElementById('container-form-customer').style.display = 'none';
             document.getElementById('container-customer-by-id').style.display = 'none';
             document.getElementById('table-list-customer').style.display = 'block';
-            loadData('http://localhost:8080/api/customer/searchAllCustomer')
+            loadData('http://localhost:8080/api/customer/searchAllCustomer', 'table-list-customer')
        })
     }
 
@@ -195,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     document.getElementById('cpf-number').value = '';
                     document.getElementById('container-customer-by-id').style.display = 'none';
                     document.getElementById('table-list-customer').style.display = 'block';
-                    inputTable(data);
+                    inputTable(data, 'table-list-customer');
                     })
                     .catch(error => {
                         console.error('Error:', error);
@@ -204,4 +185,49 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         })
     }
-});
+
+    if(registerSupplier){
+        registerSupplier.addEventListener("click", function () {
+            document.getElementById("container-form-supplier").style.display = 'block';
+            document.getElementById("table-list-supplier").style.display = 'none';
+        })
+    }
+
+    if(searchAllSupplier){
+        searchAllSupplier.addEventListener("click", function () {
+            document.getElementById("container-form-supplier").style.display = 'none';
+            document.getElementById("table-list-supplier").style.display = 'block';
+            loadData('http://localhost:8080/api/supplier/searchAllSupplier', 'table-list-supplier')
+        })
+    }
+
+    var registerSupplierForm = document.getElementById('supplier-form');
+    if(registerSupplierForm){
+        registerSupplierForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+        var formDataSupplier = {
+            name: document.getElementById('supplier-name').value,
+            countryOfOrigin: document.getElementById('country-of-origin-supplier').value
+        };
+
+        fetch('http://localhost:8080/api/supplier/registerSupplier', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+                },
+            body: JSON.stringify(formDataSupplier)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            window.alert(data.message);
+
+            document.getElementById('supplier-name').value = '';
+             document.getElementById('country-of-origin-supplier').value = '';
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            });
+        });
+    }})

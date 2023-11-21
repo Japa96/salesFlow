@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -41,6 +43,16 @@ public class SupplierService {
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Fail to register supplier");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
+
+    public ResponseEntity<?> searchAllSupplier(){
+        try{
+            List<Supplier> supplierList = new ArrayList<>();
+            supplierList = supplierRepository.findAll();
+            return ResponseEntity.status(HttpStatus.OK).body(supplierList);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Fail to search all Suppliers");
         }
     }
 

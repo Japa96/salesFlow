@@ -26,33 +26,42 @@ public class CustomerService {
     }
 
     public ResponseEntity<Map<String, Object>> registerCustomer(CustomerDTO customerDTO){
-        try{
-            Customer customer = new Customer();
-            customer.setName(customerDTO.getName());
-            customer.setLastName(customerDTO.getLastName());
-            customer.setCpf(customerDTO.getCpf());
-            customer.setEmail(customerDTO.getEmail());
+        if(customerDoesNotExist(customerDTO)){
+            try{
+                Customer customer = new Customer();
+                customer.setName(customerDTO.getName());
+                customer.setLastName(customerDTO.getLastName());
+                customer.setCpf(customerDTO.getCpf());
+                customer.setEmail(customerDTO.getEmail());
 
-            Address address = new Address();
-            address.setCity(customerDTO.getAddress().getCity());
-            address.setState(customerDTO.getAddress().getState());
-            address.setCountry(customerDTO.getAddress().getCountry());
-            address.setNeighborhood(customerDTO.getAddress().getNeighborhood());
-            address.setStreet(customerDTO.getAddress().getStreet());
-            address.setNumber(customerDTO.getAddress().getNumber());
-            address.setZipCode(customerDTO.getAddress().getZipCode());
+                Address address = new Address();
+                address.setCity(customerDTO.getAddress().getCity());
+                address.setState(customerDTO.getAddress().getState());
+                address.setCountry(customerDTO.getAddress().getCountry());
+                address.setNeighborhood(customerDTO.getAddress().getNeighborhood());
+                address.setStreet(customerDTO.getAddress().getStreet());
+                address.setNumber(customerDTO.getAddress().getNumber());
+                address.setZipCode(customerDTO.getAddress().getZipCode());
 
-            customer.setAddress(address);
-            customerRepository.save(customer);
+                customer.setAddress(address);
+                customerRepository.save(customer);
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("message","Client registered successfully");
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-        }catch (Exception e){
+                Map<String, Object> response = new HashMap<>();
+                response.put("message","Client registered successfully");
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            }catch (Exception e){
 
+                Map<String, Object> response = new HashMap<>();
+                response.put("message", "Fail to register customer");
+                response.put("error", e);
+
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            }
+
+        }else {
             Map<String, Object> response = new HashMap<>();
             response.put("message", "Fail to register customer");
-            response.put("error", e);
+            response.put("error", "Customer with the given CPF already exists.");
 
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
@@ -91,5 +100,9 @@ public class CustomerService {
             response.put("message","Fail to delete Customer id " + id);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
+    }
+
+    public boolean customerDoesNotExist(CustomerDTO customerDTO) {
+        return customerRepository.findCustomerByCpf(customerDTO.getCpf()).isEmpty();
     }
 }
